@@ -1,10 +1,91 @@
-<!-- Base layout template -->
+<!-- The main template for page models -->
 <!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<title>Cat Lovers List</title>
 
-</body>
+		<!-- Favicon -->
+    	<link rel="shortcut icon" href="/static/favicon.ico">
+    	<link rel="icon" href="/static/favicon.ico">
+
+    	<!-- normalize css -->
+		<link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize-css">
+
+    	<!-- Custom Styles -->
+    	<link rel="stylesheet" href="/static/style.css">
+
+		<!-- Bootstrap -->
+	    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+	    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	    <!--[if lt IE 9]>
+	      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	    <![endif]-->
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+		 	<div class="container">
+			  	<!-- Brand and toggle get grouped for better mobile display -->
+			  	<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-menu" aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Cat Lovers</a>
+				</div>
+
+				<!-- Collect the nav links for toggling -->
+			    <div class="collapse navbar-collapse" id="main-menu">
+			    	<ul class="nav navbar-nav navbar-right">
+			        	<li class="dropdown">
+				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></a>
+				          	<ul class="dropdown-menu">
+					            <li><a href="#"></a>
+					            </li>
+				          	</ul>
+			        	</li>
+			        	<li class="dropdown">
+				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Selfies<span class="caret"></span></a>
+				          	<ul class="dropdown-menu">
+					            <li><a href="{{url_for('showCategory', category_id=category.id)}}">
+					            	</a>
+					            </li>
+				          	</ul>
+			        	</li>
+			        	<li><a href="#">Signin/Login</a></li>
+			        	<li><a href="#">My List</a></li>
+			        	<li><a href="#">Logout</a></li>
+			        </ul>
+				</div>
+		  	</div>
+		</nav>
+
+		<div class="container">
+			{% block headerpage %}
+			<!-- the header of the pages goes here -->
+			{% endblock headerpage %}
+			{% block content %}
+			<!-- the main content from other pages goes here -->
+			{% endblock content %}
+		</div>
+
+		<footer class="footer">
+			<div class="container">
+				<p>by mc9dev with <3</p>
+			</div>
+		</footer>
+		<!-- Scripts -->
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins and google sign in) -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+	</body>
 </html>

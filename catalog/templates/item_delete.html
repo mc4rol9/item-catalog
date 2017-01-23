@@ -1,4 +1,21 @@
 <!-- Page Template: Delete item -->
 {% extends "layout.html" %}
 {% block content %}
+<header class="page-header">
+	<h1>Delete your Cat name</h1>
+</header>
+{% endblock headerpage %}	
+
+{% block content %}
+<main class="row">
+	<section class="col-sm-8 col-sm-offset-2">
+		<h2>Are you sure about it?</h2>
+
+		<form action="#" method='post'>
+			<input type="submit" value="Delete">
+		</form>
+
+		<a href="#">Cancel</a>
+	</section>
+</main>
 {% endblock content %}
