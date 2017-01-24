@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import (flash, render_template, url_for)
+from flask import (flash, render_template, url_for, request, redirect)
 
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
@@ -45,12 +45,24 @@ def showList(user_id):
                            items=items)
 
 
-@app.route('/catlover/delete')  # for testing
 @app.route('/catlover/<int:user_id>/delete/', methods=['GET', 'POST'])
-def deleteList():
+def deleteList(user_id):
     menuNav = categoryMenu()
 
-    return render_template('list_delete.html', menuNav=menuNav)
+    user = session.query(User).filter_by(id=user_id).one()
+    items = session.query(Item).filter_by(user_id=user_id).all()
+
+    if request.method == 'POST':
+        for item in items:
+            session.delete(item)
+            print "List deleted!"
+
+        session.delete(user)
+        print "User deleted!"
+        session.commit()
+        return redirect(url_for('mainPage'))
+    else:
+        return render_template('list_delete.html', menuNav=menuNav, user=user)
 
 
 @app.route('/category/')  # for testing

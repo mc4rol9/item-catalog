@@ -1,6 +1,5 @@
 <!-- Page Template: Delete list -->
 {% extends "layout.html" %}
-{% block content %}
 {% block headerpage %}
 <header class="page-header">
 	<h1>Delete your list!</h1>
@@ -14,11 +13,11 @@
 		    You will no longer be a Cat Lover.<br>
 		    Are you sure about it?</h2>
 
-		<form action="" method='post'>
+		<form action="{{url_for('deleteList', user_id=user.id)}}" method='post'>
 			<input type="submit" value="Delete">
 		</form>
 
-		<a href="">Cancel</a>
+		<a href="{{url_for('showList', user_id=user.id)}}">Cancel</a>
 	</section>
 </main>
 {% endblock content %}
