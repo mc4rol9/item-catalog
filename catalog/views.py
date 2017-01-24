@@ -65,12 +65,18 @@ def deleteList(user_id):
         return render_template('list_delete.html', menuNav=menuNav, user=user)
 
 
-@app.route('/category/')  # for testing
 @app.route('/category/<int:category_id>/cats/')
-def showCategory():
+def showCategory(category_id):
     '''Show items to a specific category.'''
     menuNav = categoryMenu()
-    return render_template('category.html', menuNav=menuNav)
+
+    category = session.query(Category).filter_by(id=category_id).one()
+    items = (session.query(Item).filter_by(category_id=category_id).order_by(
+             desc(Item.id)).all())
+    return render_template('category.html',
+                           menuNav=menuNav,
+                           category=category,
+                           items=items)
 
 
 @app.route('/catlover/newcat')  # for testing
