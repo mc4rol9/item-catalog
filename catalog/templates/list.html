@@ -9,39 +9,39 @@
 {% block content %}
 <main class="row">
 	<section class="col-sm-8">
+	{% if items %}
+	{% for item in items %}
 	<div class="col-sm-6">
 		<div class="thumbnail">
-			<img src="" alt="site" class="img-responsive">
+			<img src="{{item.picture_url}}" alt="site" class="img-responsive">
 			<div class="caption">
-				<h3>My name is Cat Name</h3>
+				<h3>My name is {{ item.name }}</h3>
 				<h4>I am Category</h4>
-				<p><a href="" class="btn btn-default" role="button">More about me!</a></p>
+				<p><a href="{{url_for('showItem')}}" class="btn btn-default" role="button">More about me!</a></p>
 			</div>
 			
 			<p>
-				<a href="" class="btn btn-default" role="button">Edit this Cat</a>
+				<a href="{{url_for('editItem')}}" class="btn btn-default" role="button">Edit this Cat</a>
 			</p>
 			<p>
-				<a href="" class="btn btn-default" role="button">Delete this Cat</a>
+				<a href="{{url_for('deleteItem')}}" class="btn btn-default" role="button">Delete this Cat</a>
 			</p>
 			
 		</div>
 	</div>
 	{% endfor %}
-
 	{% else %}
 	<h3>No cats here yet, User Name!</h3>
 	<a href="" class="btn btn-default" role="button">Add a cat now!</a>
 	{% endif %}
 	</section>
-
+	
 	<section class="col-sm-2 col-sm-offset-2">
-		<img src="" alt="" class="img-responsive img-circle">
+		<img src="{{user.picture}}" alt="" class="img-responsive img-circle">
 		<h4>Cat Lover:</h4>
-		<h5>User Name</h5>
+		<h5>{{ user.name }}</h5>
 		
-		<p><a href="" class="btn btn-default" role="button">Delete this list</a></p>
-		
+		<p><a href="{{url_for('deleteList')}}" class="btn btn-default" role="button">Delete this list</a></p>
 	</section>
 </main>
 {% endblock content %}
