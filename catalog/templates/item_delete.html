@@ -1,8 +1,8 @@
 <!-- Page Template: Delete item -->
 {% extends "layout.html" %}
-{% block content %}
+{% block headerpage %}
 <header class="page-header">
-	<h1>Delete your Cat name</h1>
+	<h1>Delete your {{ item.name }}</h1>
 </header>
 {% endblock headerpage %}	
 
@@ -11,11 +11,13 @@
 	<section class="col-sm-8 col-sm-offset-2">
 		<h2>Are you sure about it?</h2>
 
-		<form action="#" method='post'>
+		<img src="{{item.picture_url}}" alt="site" class="img-responsive">
+		<br><br>
+		<form action="{{url_for('deleteItem', item_id=item.id)}}" method='post'>
 			<input type="submit" value="Delete">
 		</form>
 
-		<a href="#">Cancel</a>
+		<a href="{{url_for('showList', user_id=item.user.id)}}">Cancel</a>
 	</section>
 </main>
 {% endblock content %}

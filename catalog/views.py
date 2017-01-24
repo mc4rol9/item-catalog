@@ -79,14 +79,6 @@ def showCategory(category_id):
                            items=items)
 
 
-@app.route('/catlover/newcat')  # for testing
-@app.route('/catlover/<int:user_id>/list/newcat/', methods=['GET', 'POST'])
-def addItem():
-    '''Handler to add a new Item'''
-    menuNav = categoryMenu()
-    return render_template('item_new.html', menuNav=menuNav)
-
-
 @app.route('/cat/<int:item_id>/')
 def showItem(item_id):
     '''Handler to Single Item page'''
@@ -94,6 +86,14 @@ def showItem(item_id):
 
     item = session.query(Item).filter_by(id=item_id).one()
     return render_template('item.html', menuNav=menuNav, item=item)
+
+
+@app.route('/catlover/newcat')  # for testing
+@app.route('/catlover/<int:user_id>/list/newcat/', methods=['GET', 'POST'])
+def addItem():
+    '''Handler to add a new Item'''
+    menuNav = categoryMenu()
+    return render_template('item_new.html', menuNav=menuNav)
 
 
 @app.route('/cat/edit')  # for testing
@@ -106,10 +106,23 @@ def editItem():
 
 @app.route('/cat/delete')  # for testing
 @app.route('/cat/<int:item_id>/delete/', methods=['GET', 'POST'])
-def deleteItem():
+def deleteItem(item_id):
     '''To delete an item.'''
-    menuNav = categoryMenu()
-    return render_template('item_delete.html', menuNav=menuNav)
+    item = session.query(Item).filter_by(id=item_id).one()
+
+    if request.method == 'POST':
+        session.delete(item)
+        print "Item deleted!"
+
+        session.commit()
+        user = session.query(User).filter_by(id=item.user_id).one()
+        user_id = user.id
+        return redirect(url_for('showList', user_id=user_id))
+    else:
+        menuNav = categoryMenu()
+        return render_template('item_delete.html',
+                               menuNav=menuNav,
+                               item=item)
 
 
 @app.errorhandler(404)
