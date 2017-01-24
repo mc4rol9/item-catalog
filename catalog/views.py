@@ -1,13 +1,34 @@
 from flask import Flask
-from flask import render_template
+from flask import (flash, render_template, url_for)
+
+from sqlalchemy import create_engine, desc
+from sqlalchemy.orm import sessionmaker
+
+from models import Base, User, Category, Item
 
 app = Flask(__name__)
+
+# connect to database and create db session
+engine = create_engine('sqlite:///catlist.db')
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
+
+
+def categoryMenu():
+    '''Get categories from DB for menu navigation'''
+    categories = session.query(Category).all()
+    return categories
 
 
 @app.route('/')
 def mainPage():
     '''The Homepage'''
-    return render_template('index.html')
+    cat_menu = categoryMenu()
+
+    items = session.query(Item).order_by(desc(Item.id))
+    return render_template('index.html', cat_menu=cat_menu, items=items)
 
 
 @app.route('/catlover/')  # for testing
