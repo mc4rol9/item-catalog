@@ -1,27 +1,28 @@
 <!-- Page Template: Show item -->
 {% extends "layout.html" %}
-{% block content %}
+{% block headerpage %}
 <header class="page-header">
-	<h1>My name is Cat Name</h1>
+	<h1>My name is {{ item.name }}</h1>
 </header>
 {% endblock headerpage %}	
 
 {% block content %}
 <main class="row">
 	<section class="col-sm-8">
-		<img src="#" alt="site" class="img-responsive">
+		<img src="{{item.picture_url}}" alt="site" class="img-responsive">
 		<br><br>
-		<p>I am <a href="#">Category name</a></p>
+		<p>I am <a href="{{url_for('showCategory', category_id=item.category.id)}}">{{ item.category.name }}</a></p>
 		<p>About me:</p>
-		<p> {{ item.description }}</p>
+		<p>{{ item.description }}</p>
 	</section>
 
 	<section class="col-sm-2 col-sm-offset-2">
-		<img src="#" alt="" class="img-responsive img-circle">
+		<img src="{{item.user.picture}}" alt="" class="img-responsive img-circle">
 		<h4>My human is:</h4>
-		<h5>User name</h5>
-		<p><a href="#">See Cat Lover List!</a></p>
-		<p><a href="#" class="btn btn-default" role="button">Edit this cat</a></p>
-		<p><a href="#" class="btn btn-default" role="button">Delete this cat</a></p>
+		<h5>{{ item.user.name }}</h5>
+		<p><a href="{{url_for('showList', user_id=item.user.id)}}">See Cat Lover List!</a></p>
+		<p><a href="{{url_for('editItem', item_id=item.id)}}" class="btn btn-default" role="button">Edit this cat</a></p>
+		<p><a href="{{url_for('deleteItem', item_id=item.id)}}" class="btn btn-default" role="button">Delete this cat</a></p>
 	</section>
 </main>
+{% endblock content %}

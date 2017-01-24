@@ -87,12 +87,13 @@ def addItem():
     return render_template('item_new.html', menuNav=menuNav)
 
 
-@app.route('/cat/')  # for testing
 @app.route('/cat/<int:item_id>/')
-def showItem():
+def showItem(item_id):
     '''Handler to Single Item page'''
     menuNav = categoryMenu()
-    return render_template('item.html', menuNav=menuNav)
+
+    item = session.query(Item).filter_by(id=item_id).one()
+    return render_template('item.html', menuNav=menuNav, item=item)
 
 
 @app.route('/cat/edit')  # for testing
