@@ -12,50 +12,55 @@ def mainPage():
 
 @app.route('/catlover/')  # for testing
 @app.route('/catlover/<int:user_id>/')
-def showList(user_id):
+def showList():
     '''A User's list page '''
     return render_template('list.html')
 
 
 @app.route('/catlover/delete')  # for testing
 @app.route('/catlover/<int:user_id>/delete/', methods=['GET', 'POST'])
-def deleteList(user_id):
+def deleteList():
     return render_template('list_delete.html')
 
 
 @app.route('/category/')  # for testing
 @app.route('/category/<int:category_id>/cats/')
-def showCategory(category_id):
+def showCategory():
     '''Show items to a specific category.'''
     return render_template('category.html')
 
 
 @app.route('/catlover/newcat')  # for testing
 @app.route('/catlover/<int:user_id>/list/newcat/', methods=['GET', 'POST'])
-def addItem(user_id):
+def addItem():
     '''Handler to add a new Item'''
     return render_template('item_new.html')
 
 
 @app.route('/cat/')  # for testing
 @app.route('/cat/<int:item_id>/')
-def showItem(item_id):
+def showItem():
     '''Handler to Single Item page'''
     return render_template('item.html')
 
 
 @app.route('/cat/edit')  # for testing
 @app.route('/cat/<int:item_id>/edit/', methods=['GET', 'POST'])
-def editItem(item_id, category_name=None):
+def editItem():
     '''To edit an item.'''
     return render_template('item_edit.html')
 
 
 @app.route('/cat/delete')  # for testing
 @app.route('/cat/<int:item_id>/delete/', methods=['GET', 'POST'])
-def deleteItem(item_id):
+def deleteItem():
     '''To delete an item.'''
     return render_template('item_delete.html')
+
+
+@app.errorhandler(404)
+def notFound(exc):
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
     app.debug = True
