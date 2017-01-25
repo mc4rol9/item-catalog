@@ -23,7 +23,6 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024  # 4MB
 app.secret_key = SECRET_KEY
 
 # connect to database and create db session
@@ -156,6 +155,8 @@ def addItem(user_id):
 
         if picture_filename and allowed_file(picture_filename.filename):
             filename = secure_filename(picture_filename.filename)
+            if os.path.isdir(app.config['UPLOAD_FOLDER']) is False:
+                os.mkdir(app.config['UPLOAD_FOLDER'])
             picture_filename.save(os.path.join(
                                   app.config['UPLOAD_FOLDER'], filename))
             newItem.picture_filename = filename
@@ -180,15 +181,63 @@ def addItem(user_id):
                                user=user)
 
 
-@app.route('/cat/edit')  # for testing
 @app.route('/cat/<int:item_id>/edit/', methods=['GET', 'POST'])
-def editItem():
+def editItem(item_id):
     '''To edit an item.'''
-    menuNav = categoryMenu()
-    return render_template('item_edit.html', menuNav=menuNav)
+    item = session.query(Item).filter_by(id=item_id).one()
+
+    if request.method == 'POST':
+        if not request.form['name']:
+            flash("Your cat needs a name")
+            return redirect(url_for('editItem', item_id=item_id))
+        else:
+            if request.form['name'] != item.name:
+                item.name = request.form['name']
+
+        if not request.form['description']:
+            flash("C'mon! One line about your cat!")
+            return redirect(url_for('editItem', item_id=item_id))
+        else:
+            if request.form['description'] != item.description:
+                item.description = request.form['description']
+
+        editedCategory = (session.query(Category).filter_by(
+                    name=request.form['category']).one())
+        if editedCategory != item.category:
+            item.category = editedCategory
+
+        picture_filename = request.files['picture_file']
+
+        if picture_filename and allowed_file(picture_filename.filename):
+            if item.picture_filename:
+                delete_image(item.picture_filename)
+            filename = secure_filename(picture_filename.filename)
+            if os.path.isdir(app.config['UPLOAD_FOLDER']) is False:
+                os.mkdir(app.config['UPLOAD_FOLDER'])
+            picture_filename.save(os.path.join(
+                                  app.config['UPLOAD_FOLDER'], filename))
+            item.picture_filename = filename
+            item.picture_url = None
+        elif not picture_filename and request.form['picture_url']:
+            item.picture_url = request.form['picture_url']
+            if item.picture_filename:
+                delete_image(item.picture_filename)
+                item.picture_filename = None
+
+        session.add(item)
+        session.commit()
+
+        flash("Your cat has changed!")
+        item_id = item.id
+        return redirect(url_for('showItem', item_id=item_id))
+
+    else:
+        categories = categoryMenu()
+        return render_template('item_edit.html',
+                               categories=categories,
+                               item=item)
 
 
-@app.route('/cat/delete')  # for testing
 @app.route('/cat/<int:item_id>/delete/', methods=['GET', 'POST'])
 def deleteItem(item_id):
     '''To delete an item.'''

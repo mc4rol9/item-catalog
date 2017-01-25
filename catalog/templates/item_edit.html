@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 {% block headerpage %}
 <header class="page-header">
-	<h1>Change Cat Name!</h1>
+	<h1>Edit {{ item.name }}!</h1>
 </header>
 {% endblock headerpage %}	
 
@@ -14,35 +14,41 @@
 		{% elif item.picture_url != none %}
 		<img src="{{item.picture_url}}" alt="cat picture" class="img-responsive">
 		{% endif %}
-		<form action="" method='post' enctype="multipart/form-data">
+		<form action="{{url_for('editItem', item_id=item.id)}}" method='post' enctype="multipart/form-data">
 			<div class="form-group">
-				<p>You can upload an image <strong>or</strong> link to an image on the web.</p>
-				<p>Choose your iamge:</p>
+			    <label for="catName">Cat's name</label>
+			    <input type="text" class="form-control" id="catName" name="name" value="{{item.name}}">
+			</div>
+
+			<div class="form-group">
+			    <label for="catBio">About Cat</label>
+			    <textarea class="form-control" rows="10" name="description">{{item.description}}</textarea>
+			</div>
+
+			<select class="form-control" name="category">
+			{% for category in categories %}
+				{% if category.id == item.category_id %}
+				<option value="{{category.name}}" selected>{{ category.name }}</option>
+				{% else %}
+				<option value="{{category.name}}">{{ category.name }}</option>
+				{% endif %}
+			{% endfor %}
+			</select>
+
+			<div class="form-group">
+			    <p>If you want to change your cat's picture:</p>
+				<p>You can upload an image <strong>or</strong> give s link to an image on the web.</p>
+				<p>Choose your image:</p>
 				<label for="catImage">Cat's Image</label>
 			    <input type="file" id="catImage" name="picture_file">
-			    <p class="help-block">Select an image file in jpg or png. Max Size: 4MB.</p>
+			    <p class="help-block">Select an image file in jpg or png.</p>		    
 
 			    <label for="catImage">Or insert the full URL of your image:</label>
 			    <input type="url" id="catFile" name="picture_url">
 			</div>
 
-			<div class="form-group">
-			    <label for="catName">Cat's name</label>
-			    <input type="text" class="form-control" id="catName" placeholder="Cat's name" name="name">
-			</div>
-
-			<select class="form-control" name="category">
-				<option value="" selected>Category Name</option>
-				<option value="">Category name</option>
-			</select>
-
-			<div class="form-group">
-			    <label for="catBio">About Cat</label>
-			    <textarea class="form-control" rows="10" name="description"></textarea>
-			</div>
-
-		 	<button type="submit" class="btn btn-default" name="create">Up Cat!</button>
-		 	<a href="" class="btn btn-default" role="button">Cancel</a>
+		 	<button type="submit" class="btn btn-default" name="save">Save Cat!</button>
+		 	<a href="{{url_for('showItem', item_id=item.id)}}" class="btn btn-default" role="button">Cancel</a>
 		</form>
 	</section>
 </main>
