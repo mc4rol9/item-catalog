@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 {% block headerpage %}
 <header class="page-header">
-	<h1>My name is {{ item.name }}</h1>
+	<h1>{{ item.name }}</h1>
 </header>
 {% endblock headerpage %}	
 
@@ -15,16 +15,16 @@
 		<img src="{{item.picture_url}}" alt="cat picture" class="img-responsive">
 		{% endif %}
 		<br><br>
-		<p>I am <a href="{{url_for('showCategory', category_id=item.category.id)}}">{{ item.category.name }}</a></p>
-		<p>About me:</p>
-		<p>{{ item.description }}</p>
+		<h3 class="align-center"><span class="cat-name">I am </span>
+				<a href="{{url_for('showCategory', category_id=item.category.id)}}">{{ item.category.name }}</a></h3>	
+		<p><strong>ABOUT ME:</strong> {{ item.description }}</p>
 	</section>
 
-	<section class="col-sm-2 col-sm-offset-2">
+	<section class="col-sm-2 col-sm-offset-2 align-center">
 		<img src="{{item.user.picture}}" alt="" class="img-responsive img-circle">
 		<h4>My human is:</h4>
 		<h5>{{ item.user.name }}</h5>
-		<p><a href="{{url_for('showList', user_id=item.user.id)}}">See Cat Lover List!</a></p>
+		<p><a href="{{url_for('showList', user_id=item.user.id)}}" class="btn btn-default" role="button">CAT LIST</a></p>
 		{% if author %}
 		<p><a href="{{url_for('editItem', item_id=item.id)}}" class="btn btn-default" role="button">Edit this cat</a></p>
 		<p><a href="{{url_for('deleteItem', item_id=item.id)}}" class="btn btn-default" role="button">Delete this cat</a></p>

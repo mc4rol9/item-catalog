@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 {% block headerpage %}
 <header class="page-header">
-	<h1>My cat lover list</h1>
+	<h1>My list</h1>
 </header>
 {% endblock headerpage %}	
 
@@ -12,42 +12,39 @@
 	{% if items %}
 	{% for item in items %}
 	<div class="col-sm-6">
-		<div class="thumbnail">
+		<div class="thumbnail align-center">
 			{% if item.picture_filename != none %}
 			<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-responsive">
 			{% elif item.picture_url != none %}
 			<img src="{{item.picture_url}}" alt="cat picture" class="img-responsive">
 			{% endif %}
-			<div class="caption">
-				<h3>My name is {{ item.name }}</h3>
-				<h4>I am {{ item.category.name }}</h4>
-				<p><a href="{{url_for('showItem', item_id=item.id)}}" class="btn btn-default" role="button">More about me!</a></p>
+			<div class="caption align-center">
+				<h3 class="align-center"><span class="cat-name">{{ item.name }}</span> is {{ item.category.name }}</h3>
+				<p><a href="{{url_for('showItem', item_id=item.id)}}" class="btn btn-default" role="button">More!</a></p>
 			</div>
 			{% if author %}
-			<p>
-				<a href="{{url_for('editItem', item_id=item.id)}}" class="btn btn-default" role="button">Edit this Cat</a>
-			</p>
-			<p>
-				<a href="{{url_for('deleteItem', item_id=item.id)}}" class="btn btn-default" role="button">Delete this Cat</a>
-			</p>
+			<a href="{{url_for('editItem', item_id=item.id)}}" class="btn btn-default" role="button">Edit Cat</a>
+			<a href="{{url_for('deleteItem', item_id=item.id)}}" class="btn btn-default" role="button">Delete Cat</a>
 			{% endif %}
 		</div>
 	</div>
 	{% endfor %}
 	{% else %}
+	<div class="col-sm-6 align-center">
 	<h3>No cats here yet!</h3>
 	{% if author %}
 	<a href="{{url_for('addItem', user_id=user.id)}}" class="btn btn-default" role="button">Add a cat now!</a>
+	</div>
 	{% endif %}
 	{% endif %}
 	</section>
 	
-	<section class="col-sm-2 col-sm-offset-2">
+	<section class="col-sm-2 col-sm-offset-2 user align-center">
 		<img src="{{user.picture}}" alt="" class="img-responsive img-circle">
 		<h4>Cat Lover:</h4>
 		<h5>{{ user.name }}</h5>
 		{% if author %}
-		<p><a href="{{url_for('deleteList', user_id=user.id)}}" class="btn btn-default" role="button">Delete this list</a></p>
+		<p><a href="{{url_for('deleteList', user_id=user.id)}}" class="btn btn-default" role="button">Delete list</a></p>
 		<p><a href="{{url_for('addItem', user_id=user.id)}}" class="btn btn-default" role="button">Add a new cat</a></p>
 		{% endif %}
 	</section>

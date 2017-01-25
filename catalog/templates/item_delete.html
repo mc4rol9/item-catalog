@@ -18,10 +18,9 @@
 		{% endif %}
 		<br><br>
 		<form action="{{url_for('deleteItem', item_id=item.id)}}" method='post'>
-			<input type="submit" value="Delete">
+			<input type="submit" value="Bye Cat" class="btn btn-default">
+			<a href="{{url_for('showItem', item_id=item.id)}}" class="btn btn-default">Cancel</a>
 		</form>
-
-		<a href="{{url_for('showList', user_id=item.user.id)}}">Cancel</a>
 	</section>
 </main>
 {% endblock content %}

@@ -394,10 +394,13 @@ def logout():
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
             gdisconnect()
+            del login_session['gplus_id']
 
         elif login_session['provider'] == 'facebook':
             fbdisconnect()
+            del login_session['facebook_id']
 
+        del login_session['access_token']
         del login_session['username']
         del login_session['email']
         del login_session['picture']
@@ -488,7 +491,7 @@ def deleteList(user_id):
             session.delete(user)
             session.commit()
             flash("Oh! You're no longer a Cat Lover! :-(")
-            return redirect(url_for('mainPage'))
+            return redirect(url_for('logout'))
         else:
             return render_template('list_delete.html',
                                    menuNav=menuNav,
@@ -701,7 +704,11 @@ def deleteItem(item_id):
 @app.errorhandler(404)
 def notFound(exc):
     menuNav = categoryMenu()
-    return render_template('404.html', menuNav=menuNav), 404
+    items = session.query(Item).order_by(desc(Item.id))
+    return render_template('404.html',
+                           menuNav=menuNav,
+                           items=items
+                           ), 404
 
 if __name__ == '__main__':
     app.debug = True

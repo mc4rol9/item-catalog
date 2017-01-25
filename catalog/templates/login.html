@@ -8,9 +8,9 @@
 {% endblock headerpage %}
 
 {% block content %}
-<main class="row">
+<main class="row align-center">
 	<div class="col-xs-6">
-		<h4>Use your Google+ account</h4>
+		<h4>Use Google+</h4>
 		<!-- Google+ login button authenticate -->
 		<div class="gplusSignin">
 			<span class="g-signin"
@@ -26,7 +26,7 @@
 	</div>
 
 	<div class="col-xs-6">
-		<h4>Use your Facebook account</h4>
+		<h4>Use Facebook</h4>
 		<!-- Facebook login button authenticate-->
 		<fb:login-button size="large" scope="public_profile,email" onlogin="sendTokenToServer();">
 			<a href='javascript:sendTokenToServer()'>Facebook</a>
