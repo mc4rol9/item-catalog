@@ -26,6 +26,15 @@ class User(Base):
     picture = Column(String(256))
     item = relationship('Item', cascade="save-update, merge, delete")
 
+    @property
+    def serialize(self):
+        '''Return object data in easy serializeable format.'''
+        return {
+            'id': self.id,
+            'name': self.name,
+            'Item': [i.serialize for i in self.item]
+        }
+
 
 class Category(Base):
     '''Creates the database table for category of items.
@@ -41,6 +50,15 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
     item = relationship('Item', cascade="save-update, merge, delete")
+
+    @property
+    def serialize(self):
+        '''Return object data in easy serializeable format.'''
+        return {
+            'id': self.id,
+            'name': self.name,
+            'Item': [i.serialize for i in self.item]
+        }
 
 
 class Item(Base):
@@ -71,7 +89,18 @@ class Item(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
+    @property
+    def serialize(self):
+        '''Return object data in easy serializeable format.'''
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'category_id': self.category_id,
+            'user_id': self.user_id
+        }
+
 
 '''Create the database'''
-engine = create_engine('sqlite:///catlovers.db')
+engine = create_engine('sqlite:///catlist.db')
 Base.metadata.create_all(engine)

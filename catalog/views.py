@@ -3,7 +3,7 @@ import random
 import string
 
 from flask import Flask
-from flask import (flash, render_template, url_for,
+from flask import (flash, render_template, url_for, jsonify,
                    request, redirect, send_from_directory)
 
 from werkzeug import secure_filename
@@ -61,7 +61,30 @@ def show_image(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
-# PRIMARY ROUTES
+# THE JSON API ENDPOINTS -->
+
+@app.route('/cats/JSON')
+def catlistsJSON():
+    '''Return all items with categories as JSON file'''
+    categories = categoryMenu()
+    return jsonify(categories=[r.serialize for r in categories])
+
+
+@app.route('/catlover/<int:user_id>/JSON/')
+def listJSON(user_id):
+    '''Return a user list as JSON file'''
+    user = session.query(User).filter_by(id=user_id).one()
+    return jsonify(User=user.serialize)
+
+
+@app.route('/cat/<int:item_id>/JSON/')
+def itemJSON(item_id):
+    '''Return a single item as JSON file'''
+    item = session.query(Item).filter_by(id=item_id).one()
+    return jsonify(Item=item.serialize)
+
+
+# PRIMARY ROUTES -->
 
 @app.route('/')
 def mainPage():
