@@ -11,7 +11,11 @@
 	<section class="col-sm-8 col-sm-offset-2">
 		<h2>Are you sure about it?</h2>
 
-		<img src="{{item.picture_url}}" alt="site" class="img-responsive">
+		{% if item.picture_filename != none %}
+		<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-responsive">
+		{% elif item.picture_url != none %}
+		<img src="{{item.picture_url}}" alt="cat picture" class="img-responsive">
+		{% endif %}
 		<br><br>
 		<form action="{{url_for('deleteItem', item_id=item.id)}}" method='post'>
 			<input type="submit" value="Delete">

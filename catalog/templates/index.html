@@ -14,7 +14,11 @@
 	{% for item in items %}
 	<div class="col-sm-4">
 		<div class="thumbnail">
-			<img src="{{ item.picture_url }}" alt="site" class="img-responsive">
+			{% if item.picture_filename != none %}
+			<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-responsive">
+			{% elif item.picture_url != none %}
+			<img src="{{item.picture_url}}" alt="cat picture" class="img-responsive">
+			{% endif %}
 			<div class="caption">
 				<h3>My name is {{ item.name }}</h3>
 				<p>I am <a href="{{url_for('showCategory', category_id=item.category.id)}}">{{ item.category.name }}</a></p>

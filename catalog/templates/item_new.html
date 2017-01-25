@@ -1,6 +1,6 @@
 <!-- Page Template: Add new item -->
 {% extends "layout.html" %}
-{% block content %}
+{% block headerpage %}
 <header class="page-header">
 	<h1>Uploading a New Cat! YEY!</h1>
 </header>
@@ -9,35 +9,36 @@
 {% block content %}
 <main class="row">
 	<section class="col-sm-8 col-sm-offset-2">
-		<form action="" method='post' enctype="multipart/form-data">
-			<div class="form-group">
-				<p>You can upload an image <strong>or</strong> link to an image on the web.</p>
-				<p>Choose your iamge:</p>
-				<label for="catImage">Cat's Image</label>
-			    <input type="file" id="catImage" name="picture_file">
-			    <p class="help-block">Select an image file in jpg or png. Max Size: 4MB.</p>
-
-			    <label for="catImage">Or insert the full URL of your image:</label>
-			    <input type="url" id="catFile" name="picture_url">
-			</div>
-
+		<form action="{{url_for('addItem', user_id=user.id)}}" method='post' enctype="multipart/form-data">
 			<div class="form-group">
 			    <label for="catName">Cat's name</label>
-			    <input type="text" class="form-control" id="catName" placeholder="Cat's name" name="name">
+			    <input type="text" class="form-control" id="catName" name="name">
 			</div>
-
-			<select class="form-control" name="category">
-				<option value="" selected>Category Name</option>
-				<option value="">Category name</option>
-			</select>
 
 			<div class="form-group">
 			    <label for="catBio">About Cat</label>
 			    <textarea class="form-control" rows="10" name="description"></textarea>
 			</div>
 
+			<select class="form-control" name="category">
+				{% for category in categories %}
+				<option value="{{category.name}}">{{ category.name }}</option>
+				{% endfor %}
+			</select>
+
+			<div class="form-group">
+				<p>You can upload an image <strong>or</strong> link to an image on the web.</p>
+				<p>Choose your image:</p>
+				<label for="catImage">Cat's Image</label>
+			    <input type="file" id="catImage" name="picture_file">
+			    <p class="help-block">Select an image file in jpg or png.</p>
+
+			    <label for="catImage">Or insert the full URL of your image:</label>
+			    <input type="url" id="catFile" name="picture_url">
+			</div>
+
 		 	<button type="submit" class="btn btn-default" name="create">Up Cat!</button>
-		 	<a href="" class="btn btn-default" role="button">Cancel</a>
+		 	<a href="{{url_for('showList', user_id=user.id)}}" class="btn btn-default" role="button">Cancel</a>
 		</form>
 	</section>
 </main>

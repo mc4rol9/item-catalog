@@ -1,12 +1,29 @@
+import os
+import random
+import string
+
 from flask import Flask
-from flask import (flash, render_template, url_for, request, redirect)
+from flask import (flash, render_template, url_for,
+                   request, redirect, send_from_directory)
+
+from werkzeug import secure_filename
 
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
 
 from models import Base, User, Category, Item
 
+# secret key to encrypt session cookie
+SECRET_KEY = ''.join(random.choice(string.ascii_uppercase +
+                     string.digits) for x in xrange(32))
+
+# define default values for file management
+UPLOAD_FOLDER = '/vagrant/catalog/uploads/'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = SECRET_KEY
 
 # connect to database and create db session
 engine = create_engine('sqlite:///catlist.db')
@@ -16,10 +33,24 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+# GENERAL FUNCTIONS -->
+
 def categoryMenu():
     '''Get categories from DB for menu navigation'''
     menuNav = session.query(Category).all()
     return menuNav
+
+
+def allowed_file(filename):
+    '''Check if a file extension is valid'''
+    return ('.' in filename and filename.rsplit('.', 1)[1]
+            in ALLOWED_EXTENSIONS)
+
+
+@app.route('/picture/<filename>')
+def show_image(filename):
+    '''Get images uploaded'''
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 @app.route('/')
@@ -88,12 +119,54 @@ def showItem(item_id):
     return render_template('item.html', menuNav=menuNav, item=item)
 
 
-@app.route('/catlover/newcat')  # for testing
-@app.route('/catlover/<int:user_id>/list/newcat/', methods=['GET', 'POST'])
-def addItem():
+@app.route('/catlover/<int:user_id>/newcat/', methods=['GET', 'POST'])
+def addItem(user_id):
     '''Handler to add a new Item'''
-    menuNav = categoryMenu()
-    return render_template('item_new.html', menuNav=menuNav)
+    user = session.query(User).filter_by(id=user_id).one()
+    user_id = user.id
+
+    if request.method == 'POST':
+        if not request.form['name']:
+            flash("Your cat needs a name")
+            return redirect(url_for('addItem', user_id=user_id))
+
+        if not request.form['description']:
+            flash("C'mon! One line about your cat!")
+            return redirect(url_for('addItem', user_id=user_id))
+
+        category = (session.query(Category).filter_by(
+                    name=request.form['category']).one())
+        newItem = Item(category=category,
+                       name=request.form['name'],
+                       description=request.form['description'],
+                       user_id=user.id)
+
+        picture_filename = request.files['picture_file']
+
+        if picture_filename and allowed_file(picture_filename.filename):
+            filename = secure_filename(picture_filename.filename)
+            picture_filename.save(os.path.join(
+                                  app.config['UPLOAD_FOLDER'], filename))
+            newItem.picture_filename = filename
+        elif request.form['picture_url']:
+            newItem.picture_url = request.form['picture_url']
+        else:
+            flash("Wow! Your cat deserves a picture! Upload it"
+                  " or give us a link, please!")
+            return redirect(url_for('addItem', user_id=user_id))
+
+        session.add(newItem)
+        session.commit()
+
+        flash("Perrrrfect! Your amazing cat is up!")
+        item_id = newItem.id
+        return redirect(url_for('showItem', item_id=item_id))
+
+    else:
+        categories = categoryMenu()
+        return render_template('item_new.html',
+                               categories=categories,
+                               user=user)
 
 
 @app.route('/cat/edit')  # for testing

@@ -9,7 +9,11 @@
 {% block content %}
 <main class="row">
 	<section class="col-sm-8">
-		<img src="{{item.picture_url}}" alt="site" class="img-responsive">
+	    {% if item.picture_filename != none %}
+		<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-responsive">
+		{% elif item.picture_url != none %}
+		<img src="{{item.picture_url}}" alt="cat picture" class="img-responsive">
+		{% endif %}
 		<br><br>
 		<p>I am <a href="{{url_for('showCategory', category_id=item.category.id)}}">{{ item.category.name }}</a></p>
 		<p>About me:</p>
@@ -23,6 +27,7 @@
 		<p><a href="{{url_for('showList', user_id=item.user.id)}}">See Cat Lover List!</a></p>
 		<p><a href="{{url_for('editItem', item_id=item.id)}}" class="btn btn-default" role="button">Edit this cat</a></p>
 		<p><a href="{{url_for('deleteItem', item_id=item.id)}}" class="btn btn-default" role="button">Delete this cat</a></p>
+		<p><a href="{{url_for('addItem', user_id=item.user.id)}}" class="btn btn-default" role="button">Add a new cat</a></p>
 	</section>
 </main>
 {% endblock content %}

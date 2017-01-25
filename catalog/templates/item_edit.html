@@ -1,6 +1,6 @@
 <!-- Page Template: Edit item -->
 {% extends "layout.html" %}
-{% block content %}
+{% block headerpage %}
 <header class="page-header">
 	<h1>Change Cat Name!</h1>
 </header>
@@ -9,6 +9,11 @@
 {% block content %}
 <main class="row">
 	<section class="col-sm-8 col-sm-offset-2">
+		{% if item.picture_filename != none %}
+		<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-responsive">
+		{% elif item.picture_url != none %}
+		<img src="{{item.picture_url}}" alt="cat picture" class="img-responsive">
+		{% endif %}
 		<form action="" method='post' enctype="multipart/form-data">
 			<div class="form-group">
 				<p>You can upload an image <strong>or</strong> link to an image on the web.</p>
