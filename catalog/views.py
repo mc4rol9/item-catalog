@@ -10,6 +10,7 @@ from werkzeug import secure_filename
 
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 
 from models import Base, User, Category, Item
 
@@ -73,14 +74,24 @@ def catlistsJSON():
 @app.route('/catlover/<int:user_id>/JSON/')
 def listJSON(user_id):
     '''Return a user list as JSON file'''
-    user = session.query(User).filter_by(id=user_id).one()
+    try:
+        user = session.query(User).filter_by(id=user_id).one()
+    except NoResultFound:
+        flash("Sorry, this cat lover isn't among us.")
+        return redirect(url_for('mainPage'))
+
     return jsonify(User=user.serialize)
 
 
 @app.route('/cat/<int:item_id>/JSON/')
 def itemJSON(item_id):
     '''Return a single item as JSON file'''
-    item = session.query(Item).filter_by(id=item_id).one()
+    try:
+        item = session.query(Item).filter_by(id=item_id).one()
+    except NoResultFound:
+        flash("Sorry, this cat isn't among us.")
+        return redirect(url_for('mainPage'))
+
     return jsonify(Item=item.serialize)
 
 
@@ -100,7 +111,12 @@ def showList(user_id):
     '''A User's list page '''
     menuNav = categoryMenu()
 
-    user = session.query(User).filter_by(id=user_id).one()
+    try:
+        user = session.query(User).filter_by(id=user_id).one()
+    except NoResultFound:
+        flash("Sorry, this cat lover isn't among us!")
+        return redirect(url_for('mainPage'))
+
     items = (session.query(Item).filter_by(user_id=user_id).order_by(
              desc(Item.category_id)).all())
     return render_template('list.html',
@@ -113,7 +129,12 @@ def showList(user_id):
 def deleteList(user_id):
     menuNav = categoryMenu()
 
-    user = session.query(User).filter_by(id=user_id).one()
+    try:
+        user = session.query(User).filter_by(id=user_id).one()
+    except NoResultFound:
+        flash("Sorry, this cat lover isn't among us!")
+        return redirect(url_for('mainPage'))
+
     items = session.query(Item).filter_by(user_id=user_id).all()
 
     if request.method == 'POST':
@@ -134,7 +155,12 @@ def showCategory(category_id):
     '''Show items to a specific category.'''
     menuNav = categoryMenu()
 
-    category = session.query(Category).filter_by(id=category_id).one()
+    try:
+        category = session.query(Category).filter_by(id=category_id).one()
+    except NoResultFound:
+        flash("Sorry, this category doesn't exist.")
+        return redirect(url_for('mainPage'))
+
     items = (session.query(Item).filter_by(category_id=category_id).order_by(
              desc(Item.id)).all())
     return render_template('category.html',
@@ -148,14 +174,24 @@ def showItem(item_id):
     '''Handler to Single Item page'''
     menuNav = categoryMenu()
 
-    item = session.query(Item).filter_by(id=item_id).one()
+    try:
+        item = session.query(Item).filter_by(id=item_id).one()
+    except NoResultFound:
+        flash("Sorry, this cat isn't among us!")
+        return redirect(url_for('mainPage'))
+
     return render_template('item.html', menuNav=menuNav, item=item)
 
 
 @app.route('/catlover/<int:user_id>/newcat/', methods=['GET', 'POST'])
 def addItem(user_id):
     '''Handler to add a new Item'''
-    user = session.query(User).filter_by(id=user_id).one()
+    try:
+        user = session.query(User).filter_by(id=user_id).one()
+    except NoResultFound:
+        flash("Sorry, this cat lover isn't among us!")
+        return redirect(url_for('mainPage'))
+
     user_id = user.id
 
     if request.method == 'POST':
@@ -207,7 +243,11 @@ def addItem(user_id):
 @app.route('/cat/<int:item_id>/edit/', methods=['GET', 'POST'])
 def editItem(item_id):
     '''To edit an item.'''
-    item = session.query(Item).filter_by(id=item_id).one()
+    try:
+        item = session.query(Item).filter_by(id=item_id).one()
+    except NoResultFound:
+        flash("Sorry, this cat isn't among us!")
+        return redirect(url_for('mainPage'))
 
     if request.method == 'POST':
         if not request.form['name']:
@@ -264,7 +304,11 @@ def editItem(item_id):
 @app.route('/cat/<int:item_id>/delete/', methods=['GET', 'POST'])
 def deleteItem(item_id):
     '''To delete an item.'''
-    item = session.query(Item).filter_by(id=item_id).one()
+    try:
+        item = session.query(Item).filter_by(id=item_id).one()
+    except NoResultFound:
+        flash("Sorry, this cat isn't among us!")
+        return redirect(url_for('mainPage'))
 
     if request.method == 'POST':
         if item.picture_filename:
