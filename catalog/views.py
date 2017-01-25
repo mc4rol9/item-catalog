@@ -23,6 +23,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024  # 4MB
 app.secret_key = SECRET_KEY
 
 # connect to database and create db session
@@ -33,7 +34,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-# GENERAL FUNCTIONS -->
+# GENERAL FUNCTIONS AND ROUTES -->
 
 def categoryMenu():
     '''Get categories from DB for menu navigation'''
@@ -47,11 +48,21 @@ def allowed_file(filename):
             in ALLOWED_EXTENSIONS)
 
 
+def delete_image(filename):
+    '''Delete a image from server'''
+    try:
+        os.remove(os.path.join(UPLOAD_FOLDER, filename))
+    except OSError:
+        print "Sorry, we couldn't delete the image %s" % filename
+
+
 @app.route('/picture/<filename>')
 def show_image(filename):
     '''Get images uploaded'''
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+
+# PRIMARY ROUTES
 
 @app.route('/')
 def mainPage():
@@ -184,12 +195,14 @@ def deleteItem(item_id):
     item = session.query(Item).filter_by(id=item_id).one()
 
     if request.method == 'POST':
+        if item.picture_filename:
+            delete_image(item.picture_filename)
         session.delete(item)
-        print "Item deleted!"
-
         session.commit()
+
         user = session.query(User).filter_by(id=item.user_id).one()
         user_id = user.id
+        flash("Your cat's gone! :-(")
         return redirect(url_for('showList', user_id=user_id))
     else:
         menuNav = categoryMenu()
