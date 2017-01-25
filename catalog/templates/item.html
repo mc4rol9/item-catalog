@@ -25,9 +25,11 @@
 		<h4>My human is:</h4>
 		<h5>{{ item.user.name }}</h5>
 		<p><a href="{{url_for('showList', user_id=item.user.id)}}">See Cat Lover List!</a></p>
+		{% if author %}
 		<p><a href="{{url_for('editItem', item_id=item.id)}}" class="btn btn-default" role="button">Edit this cat</a></p>
 		<p><a href="{{url_for('deleteItem', item_id=item.id)}}" class="btn btn-default" role="button">Delete this cat</a></p>
 		<p><a href="{{url_for('addItem', user_id=item.user.id)}}" class="btn btn-default" role="button">Add a new cat</a></p>
+		{% endif %}
 	</section>
 </main>
 {% endblock content %}

@@ -23,20 +23,22 @@
 				<h4>I am {{ item.category.name }}</h4>
 				<p><a href="{{url_for('showItem', item_id=item.id)}}" class="btn btn-default" role="button">More about me!</a></p>
 			</div>
-			
+			{% if author %}
 			<p>
 				<a href="{{url_for('editItem', item_id=item.id)}}" class="btn btn-default" role="button">Edit this Cat</a>
 			</p>
 			<p>
 				<a href="{{url_for('deleteItem', item_id=item.id)}}" class="btn btn-default" role="button">Delete this Cat</a>
 			</p>
-			
+			{% endif %}
 		</div>
 	</div>
 	{% endfor %}
 	{% else %}
-	<h3>No cats here yet, User Name!</h3>
+	<h3>No cats here yet!</h3>
+	{% if author %}
 	<a href="{{url_for('addItem', user_id=user.id)}}" class="btn btn-default" role="button">Add a cat now!</a>
+	{% endif %}
 	{% endif %}
 	</section>
 	
@@ -44,9 +46,10 @@
 		<img src="{{user.picture}}" alt="" class="img-responsive img-circle">
 		<h4>Cat Lover:</h4>
 		<h5>{{ user.name }}</h5>
-		
+		{% if author %}
 		<p><a href="{{url_for('deleteList', user_id=user.id)}}" class="btn btn-default" role="button">Delete this list</a></p>
 		<p><a href="{{url_for('addItem', user_id=user.id)}}" class="btn btn-default" role="button">Add a new cat</a></p>
+		{% endif %}
 	</section>
 </main>
 {% endblock content %}

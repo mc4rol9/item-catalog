@@ -48,7 +48,7 @@
 			        	<li class="dropdown">
 				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></a>
 				          	<ul class="dropdown-menu">
-				          		{% for category in cat_menu %}
+				          		{% for category in menuNav %}
 				          		{% if loop.index < 7 %}
 					            <li><a href="{{url_for('showCategory', category_id=category.id)}}">
 					            	{{ category.name }}</a>
@@ -60,7 +60,7 @@
 			        	<li class="dropdown">
 				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Selfies<span class="caret"></span></a>
 				          	<ul class="dropdown-menu">
-				          	{% for category in cat_menu %}
+				          	{% for category in menuNav %}
 				          		{% if loop.index > 6 %}
 					            <li><a href="{{url_for('showCategory', category_id=category.id)}}">
 					            	{{ category.name }}</a>
@@ -69,10 +69,12 @@
 					        {% endfor %}
 				          	</ul>
 			        	</li>
-			        	<li><a href="#">Signin/Login</a></li>
-
-			        	<li><a href="#">My List</a></li>
-			        	<li><a href="#">Logout</a></li>
+			        	{% if 'username' not in session %}
+			        	<li><a href="{{url_for('loginPage')}}">Signin/Login</a></li>
+                        {% else %}
+			        	<li><a href="{{url_for('myList')}}">My List</a></li>
+			        	<li><a href="{{url_for('logout')}}">Logout</a></li>
+			        	{% endif %}
 			        </ul>
 				</div>
 		  	</div>
@@ -111,5 +113,7 @@
 	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	    <!-- Include all compiled plugins (below), or include individual files as needed -->
 	    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+	    <!-- pre-requisite for google sign in -->
+	    <script src="//apis.google.com/js/platform.js?onload=start"></script>
 	</body>
 </html>

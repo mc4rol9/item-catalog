@@ -376,7 +376,7 @@ def fbdisconnect():
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
 
-    if result['status'] != '200':
+    if result == '200':
         response = make_response(json.dumps(
             'Failed to revoke. Try again.'), 400)
         response.headers['Content-Type'] = 'application/json'
@@ -435,10 +435,30 @@ def showList(user_id):
 
     items = (session.query(Item).filter_by(user_id=user_id).order_by(
              desc(Item.category_id)).all())
-    return render_template('list.html',
-                           menuNav=menuNav,
-                           user=user,
-                           items=items)
+    author = getUserInfo(user.id)
+
+    if 'username' not in login_session or author.id != (
+                         login_session['user_id']):
+        return render_template('list.html',
+                               menuNav=menuNav,
+                               user=user,
+                               items=items)
+    else:
+        return render_template('list.html',
+                               menuNav=menuNav,
+                               user=user,
+                               items=items,
+                               author=author)
+
+
+@app.route('/catlover/mylist/')
+def myList():
+    '''Navbar link redirect to user list'''
+    if 'username' not in login_session:
+        return redirect('/login')
+
+    user_id = getUserID(login_session['email'])
+    return redirect(url_for('showList', user_id=user_id))
 
 
 @app.route('/catlover/<int:user_id>/delete/', methods=['GET', 'POST'])
@@ -451,19 +471,28 @@ def deleteList(user_id):
         flash("Sorry, this cat lover isn't among us!")
         return redirect(url_for('mainPage'))
 
-    items = session.query(Item).filter_by(user_id=user_id).all()
+    author = getUserInfo(user.id)
 
-    if request.method == 'POST':
-        for item in items:
-            session.delete(item)
-            print "List deleted!"
-
-        session.delete(user)
-        print "User deleted!"
-        session.commit()
+    if 'username' not in login_session or author.id != (
+                         login_session['user_id']):
+        flash("Hey, you can't delete a Cat Lover!")
         return redirect(url_for('mainPage'))
     else:
-        return render_template('list_delete.html', menuNav=menuNav, user=user)
+        items = session.query(Item).filter_by(user_id=user_id).all()
+
+        if request.method == 'POST':
+            for item in items:
+                session.delete(item)
+                print "List deleted!"
+
+            session.delete(user)
+            session.commit()
+            flash("Oh! You're no longer a Cat Lover! :-(")
+            return redirect(url_for('mainPage'))
+        else:
+            return render_template('list_delete.html',
+                                   menuNav=menuNav,
+                                   user=user)
 
 
 @app.route('/category/<int:category_id>/cats/')
@@ -496,7 +525,18 @@ def showItem(item_id):
         flash("Sorry, this cat isn't among us!")
         return redirect(url_for('mainPage'))
 
-    return render_template('item.html', menuNav=menuNav, item=item)
+    author = getUserInfo(item.user_id)
+
+    if 'username' not in login_session or author.id != (
+                         login_session['user_id']):
+        return render_template('item.html',
+                               menuNav=menuNav,
+                               item=item)
+    else:
+        return render_template('item.html',
+                               menuNav=menuNav,
+                               item=item,
+                               author=author)
 
 
 @app.route('/catlover/<int:user_id>/newcat/', methods=['GET', 'POST'])
@@ -508,52 +548,53 @@ def addItem(user_id):
         flash("Sorry, this cat lover isn't among us!")
         return redirect(url_for('mainPage'))
 
-    user_id = user.id
-
-    if request.method == 'POST':
-        if not request.form['name']:
-            flash("Your cat needs a name")
-            return redirect(url_for('addItem', user_id=user_id))
-
-        if not request.form['description']:
-            flash("C'mon! One line about your cat!")
-            return redirect(url_for('addItem', user_id=user_id))
-
-        category = (session.query(Category).filter_by(
-                    name=request.form['category']).one())
-        newItem = Item(category=category,
-                       name=request.form['name'],
-                       description=request.form['description'],
-                       user_id=user.id)
-
-        picture_filename = request.files['picture_file']
-
-        if picture_filename and allowed_file(picture_filename.filename):
-            filename = secure_filename(picture_filename.filename)
-            if os.path.isdir(app.config['UPLOAD_FOLDER']) is False:
-                os.mkdir(app.config['UPLOAD_FOLDER'])
-            picture_filename.save(os.path.join(
-                                  app.config['UPLOAD_FOLDER'], filename))
-            newItem.picture_filename = filename
-        elif request.form['picture_url']:
-            newItem.picture_url = request.form['picture_url']
-        else:
-            flash("Wow! Your cat deserves a picture! Upload it"
-                  " or give us a link, please!")
-            return redirect(url_for('addItem', user_id=user_id))
-
-        session.add(newItem)
-        session.commit()
-
-        flash("Perrrrfect! Your amazing cat is up!")
-        item_id = newItem.id
-        return redirect(url_for('showItem', item_id=item_id))
-
+    if 'username' not in login_session:
+        flash("You must be logged in to add a cat to your list!")
+        return redirect('/login')
     else:
-        categories = categoryMenu()
-        return render_template('item_new.html',
-                               categories=categories,
-                               user=user)
+        if request.method == 'POST':
+            if not request.form['name']:
+                flash("Your cat needs a name")
+                return redirect(url_for('addItem', user_id=user_id))
+
+            if not request.form['description']:
+                flash("C'mon! One line about your cat!")
+                return redirect(url_for('addItem', user_id=user_id))
+
+            category = (session.query(Category).filter_by(
+                        name=request.form['category']).one())
+            newItem = Item(category=category,
+                           name=request.form['name'],
+                           description=request.form['description'],
+                           user_id=user.id)
+
+            picture_filename = request.files['picture_file']
+
+            if picture_filename and allowed_file(picture_filename.filename):
+                filename = secure_filename(picture_filename.filename)
+                if os.path.isdir(app.config['UPLOAD_FOLDER']) is False:
+                    os.mkdir(app.config['UPLOAD_FOLDER'])
+                picture_filename.save(os.path.join(
+                                      app.config['UPLOAD_FOLDER'], filename))
+                newItem.picture_filename = filename
+            elif request.form['picture_url']:
+                newItem.picture_url = request.form['picture_url']
+            else:
+                flash("Wow! Your cat deserves a picture! Upload it"
+                      " or give us a link, please!")
+                return redirect(url_for('addItem', user_id=user_id))
+
+            session.add(newItem)
+            session.commit()
+
+            flash("Perrrrfect! Your amazing cat is up!")
+            item_id = newItem.id
+            return redirect(url_for('showItem', item_id=item_id))
+        else:
+            categories = categoryMenu()
+            return render_template('item_new.html',
+                                   categories=categories,
+                                   user=user)
 
 
 @app.route('/cat/<int:item_id>/edit/', methods=['GET', 'POST'])
@@ -565,56 +606,63 @@ def editItem(item_id):
         flash("Sorry, this cat isn't among us!")
         return redirect(url_for('mainPage'))
 
-    if request.method == 'POST':
-        if not request.form['name']:
-            flash("Your cat needs a name")
-            return redirect(url_for('editItem', item_id=item_id))
-        else:
-            if request.form['name'] != item.name:
-                item.name = request.form['name']
+    author = getUserInfo(item.user_id)
 
-        if not request.form['description']:
-            flash("C'mon! One line about your cat!")
-            return redirect(url_for('editItem', item_id=item_id))
-        else:
-            if request.form['description'] != item.description:
-                item.description = request.form['description']
-
-        editedCategory = (session.query(Category).filter_by(
-                    name=request.form['category']).one())
-        if editedCategory != item.category:
-            item.category = editedCategory
-
-        picture_filename = request.files['picture_file']
-
-        if picture_filename and allowed_file(picture_filename.filename):
-            if item.picture_filename:
-                delete_image(item.picture_filename)
-            filename = secure_filename(picture_filename.filename)
-            if os.path.isdir(app.config['UPLOAD_FOLDER']) is False:
-                os.mkdir(app.config['UPLOAD_FOLDER'])
-            picture_filename.save(os.path.join(
-                                  app.config['UPLOAD_FOLDER'], filename))
-            item.picture_filename = filename
-            item.picture_url = None
-        elif not picture_filename and request.form['picture_url']:
-            item.picture_url = request.form['picture_url']
-            if item.picture_filename:
-                delete_image(item.picture_filename)
-                item.picture_filename = None
-
-        session.add(item)
-        session.commit()
-
-        flash("Your cat has changed!")
-        item_id = item.id
-        return redirect(url_for('showItem', item_id=item_id))
-
+    if 'username' not in login_session or author.id != (
+                         login_session['user_id']):
+        flash("Hey, you can't edit a Cat that doesn't belong to you!")
+        return redirect(url_for('mainPage'))
     else:
-        categories = categoryMenu()
-        return render_template('item_edit.html',
-                               categories=categories,
-                               item=item)
+        if request.method == 'POST':
+            if not request.form['name']:
+                flash("Your cat needs a name")
+                return redirect(url_for('editItem', item_id=item_id))
+            else:
+                if request.form['name'] != item.name:
+                    item.name = request.form['name']
+
+            if not request.form['description']:
+                flash("C'mon! One line about your cat!")
+                return redirect(url_for('editItem', item_id=item_id))
+            else:
+                if request.form['description'] != item.description:
+                    item.description = request.form['description']
+
+            editedCategory = (session.query(Category).filter_by(
+                        name=request.form['category']).one())
+            if editedCategory != item.category:
+                item.category = editedCategory
+
+            picture_filename = request.files['picture_file']
+
+            if picture_filename and allowed_file(picture_filename.filename):
+                if item.picture_filename:
+                    delete_image(item.picture_filename)
+                filename = secure_filename(picture_filename.filename)
+                if os.path.isdir(app.config['UPLOAD_FOLDER']) is False:
+                    os.mkdir(app.config['UPLOAD_FOLDER'])
+                picture_filename.save(os.path.join(
+                                      app.config['UPLOAD_FOLDER'], filename))
+                item.picture_filename = filename
+                item.picture_url = None
+            elif not picture_filename and request.form['picture_url']:
+                item.picture_url = request.form['picture_url']
+                if item.picture_filename:
+                    delete_image(item.picture_filename)
+                    item.picture_filename = None
+
+            session.add(item)
+            session.commit()
+
+            flash("Your cat has changed!")
+            item_id = item.id
+            return redirect(url_for('showItem', item_id=item_id))
+
+        else:
+            categories = categoryMenu()
+            return render_template('item_edit.html',
+                                   categories=categories,
+                                   item=item)
 
 
 @app.route('/cat/<int:item_id>/delete/', methods=['GET', 'POST'])
@@ -626,21 +674,28 @@ def deleteItem(item_id):
         flash("Sorry, this cat isn't among us!")
         return redirect(url_for('mainPage'))
 
-    if request.method == 'POST':
-        if item.picture_filename:
-            delete_image(item.picture_filename)
-        session.delete(item)
-        session.commit()
+    author = getUserInfo(item.user_id)
 
-        user = session.query(User).filter_by(id=item.user_id).one()
-        user_id = user.id
-        flash("Your cat's gone! :-(")
-        return redirect(url_for('showList', user_id=user_id))
+    if 'username' not in login_session or author.id != (
+                         login_session['user_id']):
+        flash("Hey, you can't delete a Cat that doesn't belong to you!")
+        return redirect(url_for('mainPage'))
     else:
-        menuNav = categoryMenu()
-        return render_template('item_delete.html',
-                               menuNav=menuNav,
-                               item=item)
+        if request.method == 'POST':
+            if item.picture_filename:
+                delete_image(item.picture_filename)
+            session.delete(item)
+            session.commit()
+
+            user = session.query(User).filter_by(id=item.user_id).one()
+            user_id = user.id
+            flash("Your cat's gone! :-(")
+            return redirect(url_for('showList', user_id=user_id))
+        else:
+            menuNav = categoryMenu()
+            return render_template('item_delete.html',
+                                   menuNav=menuNav,
+                                   item=item)
 
 
 @app.errorhandler(404)
@@ -650,4 +705,4 @@ def notFound(exc):
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8000)
