@@ -2,30 +2,34 @@
 {% extends "layout.html" %}
 {% block headerpage %}
 <header class="page-header">
-	<h1>{{ item.name }}</h1>
+	<h1>Hello! I am {{ item.name }}</h1>
 </header>
 {% endblock headerpage %}	
 
 {% block content %}
 <main class="row">
 	<section class="col-sm-8">
+		<!-- Check if item has a picture file or a link to picture -->
 	    {% if item.picture_filename != none %}
 		<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-responsive">
 		{% elif item.picture_url != none %}
 		<img src="{{item.picture_url}}" alt="cat picture" class="img-responsive">
 		{% endif %}
 		<br><br>
-		<h3 class="align-center"><span class="cat-name">I am </span>
-				<a href="{{url_for('showCategory', category_id=item.category.id)}}">{{ item.category.name }}</a></h3>	
+		<h3 class="align-center">This is my
+		<a href="{{url_for('showCategory', category_id=item.category.id)}}"><span class="cat-name">{{ item.category.name }}</span></a> picture</h3>	
+		<br><br>
 		<p><strong>ABOUT ME:</strong> {{ item.description }}</p>
 	</section>
 
 	<section class="col-sm-2 col-sm-offset-2 align-center">
 		<img src="{{item.user.picture}}" alt="" class="img-responsive img-circle">
-		<h4>My human is:</h4>
+		<h4><strong>My human is:</strong></h4>
 		<h5>{{ item.user.name }}</h5>
-		<p><a href="{{url_for('showList', user_id=item.user.id)}}" class="btn btn-default" role="button">CAT LIST</a></p>
-		{% if author %}
+		<br><br>
+		<p><a href="{{url_for('showList', user_id=item.user.id)}}" class="btn btn-default" role="button">MORE CATS</a></p>
+		
+		{% if author %} <!-- Only show this is for the item owner-->
 		<p><a href="{{url_for('editItem', item_id=item.id)}}" class="btn btn-default" role="button">Edit this cat</a></p>
 		<p><a href="{{url_for('deleteItem', item_id=item.id)}}" class="btn btn-default" role="button">Delete this cat</a></p>
 		<p><a href="{{url_for('addItem', user_id=item.user.id)}}" class="btn btn-default" role="button">Add a new cat</a></p>

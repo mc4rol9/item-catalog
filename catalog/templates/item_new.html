@@ -21,7 +21,7 @@
 			</div>
 
 			<select class="form-control" name="category">
-				{% for category in categories %}
+				{% for category in categories %} <!-- Get all the categories -->
 				<option value="{{category.name}}">{{ category.name }}</option>
 				{% endfor %}
 			</select>

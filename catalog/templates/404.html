@@ -9,21 +9,31 @@
 
 {% block content %}
 <main class="row">
-	{% for item in items %}
-	<div class="col-sm-4">
+	{% if items %} <!-- Check if items exist -->
+	{% for item in items %} <!-- For loop to show items -->
+	{% for item in items %} <!-- For loop to show items -->
+	<div class="col-md-4 col-sm-6">
 		<div class="thumbnail">
-			{% if item.picture_filename != none %}
-			<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-responsive">
-			{% elif item.picture_url != none %}
-			<img src="{{item.picture_url}}" alt="cat picture" class="img-responsive">
-			{% endif %}
-			<div class="caption">
-				<h3>My name is {{ item.name }}</h3>
-				<p>I am <a href="{{url_for('showCategory', category_id=item.category.id)}}">{{ item.category.name }}</a></p>
-				<p><a href="{{url_for('showItem', item_id=item.id)}}" class="btn btn-default" role="button">More about me!</a></p>				
-			</div>
+		    <a href="{{url_for('showItem', item_id=item.id)}}" class="img-link">
+				<div class="div-thumb">	
+					<!-- Check if item has a picture file or a link to picture -->
+					{% if item.picture_filename != none %}
+					<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-thumb">
+					{% elif item.picture_url != none %}
+					<img src="{{item.picture_url}}" alt="cat picture" class="img-thumb">
+					{% endif %}
+				</div>
+			</a>
+			<div class="caption align-center">
+				<h3><span class="cat-name">{{ item.name }}</span>
+				<br><br>
+				<a href="{{url_for('showCategory', category_id=item.category.id)}}">{{ item.category.name }}</a></h3>	
+			</div>	
 		</div>
 	</div>
 	{% endfor %}
+	{% else %} <!-- If no items avaiable, show this message-->
+	<h3 class="align-center"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span> There is no Cat here yet! <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></h3>
+	{% endif %}
 </main>
 {% endblock content %}

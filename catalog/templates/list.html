@@ -2,47 +2,59 @@
 {% extends "layout.html" %}
 {% block headerpage %}
 <header class="page-header">
-	<h1>My list</h1>
+	<h1>Cat list</h1>
 </header>
 {% endblock headerpage %}	
 
 {% block content %}
 <main class="row">
-	<section class="col-sm-8">
-	{% if items %}
-	{% for item in items %}
-	<div class="col-sm-6">
-		<div class="thumbnail align-center">
-			{% if item.picture_filename != none %}
-			<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-responsive">
-			{% elif item.picture_url != none %}
-			<img src="{{item.picture_url}}" alt="cat picture" class="img-responsive">
-			{% endif %}
-			<div class="caption align-center">
-				<h3 class="align-center"><span class="cat-name">{{ item.name }}</span> is {{ item.category.name }}</h3>
-				<p><a href="{{url_for('showItem', item_id=item.id)}}" class="btn btn-default" role="button">More!</a></p>
+	<section class="col-md-8 col-sm-12">
+		{% if items %} <!-- Check if items exist -->
+		{% for item in items %} <!-- For loop to show items -->
+		<div class="col-sm-6">
+			<div class="thumbnail">
+			    <a href="{{url_for('showItem', item_id=item.id)}}" class="img-link">
+					<div class="div-thumb">		
+					    <!-- Check if item has a picture file or a link to picture -->	
+						{% if item.picture_filename != none %}
+						<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-thumb">
+						{% elif item.picture_url != none %}
+						<img src="{{item.picture_url}}" alt="cat picture" class="img-thumb">
+						{% endif %}
+					</div>
+				</a>
+				<div class="caption align-center">
+					<h3><span class="cat-name">{{ item.name }}</span>
+					<br><br>
+					<a href="{{url_for('showItem', item_id=item.id)}}" class="btn btn-default" role="button">More info!</a>
+					<!-- If user is the ownes of the list, show options -->	
+					{% if author %}
+					<br><br>
+					<a href="{{url_for('editItem', item_id=item.id)}}" class="btn btn-default" role="button">Edit Cat</a>
+					<a href="{{url_for('deleteItem', item_id=item.id)}}" class="btn btn-default" role="button">Delete Cat</a>
+					{% endif %}
+				</div>
 			</div>
-			{% if author %}
-			<a href="{{url_for('editItem', item_id=item.id)}}" class="btn btn-default" role="button">Edit Cat</a>
-			<a href="{{url_for('deleteItem', item_id=item.id)}}" class="btn btn-default" role="button">Delete Cat</a>
-			{% endif %}
 		</div>
-	</div>
-	{% endfor %}
-	{% else %}
-	<div class="col-sm-6 align-center">
-	<h3>No cats here yet!</h3>
-	{% if author %}
-	<a href="{{url_for('addItem', user_id=user.id)}}" class="btn btn-default" role="button">Add a cat now!</a>
-	</div>
-	{% endif %}
-	{% endif %}
+		{% endfor %}
+		{% else %} <!-- If no items in list -->
+		<div class="col-sm-6 align-center">
+		<h3>No cats here yet!</h3>
+		<!-- If user is the owner of the list, show option -->	
+		{% if author %}
+		<a href="{{url_for('addItem', user_id=user.id)}}" class="btn btn-default" role="button">Add a cat now!</a>
+		</div>
+		{% endif %}
+		{% endif %}
 	</section>
 	
-	<section class="col-sm-2 col-sm-offset-2 user align-center">
+	<section class="col-md-2 col-md-offset-2 col-sm-12 align-center">
 		<img src="{{user.picture}}" alt="" class="img-responsive img-circle">
+		<br>
 		<h4>Cat Lover:</h4>
 		<h5>{{ user.name }}</h5>
+		<br><br>
+		<!-- If user is the owner of the list, show options -->
 		{% if author %}
 		<p><a href="{{url_for('deleteList', user_id=user.id)}}" class="btn btn-default" role="button">Delete list</a></p>
 		<p><a href="{{url_for('addItem', user_id=user.id)}}" class="btn btn-default" role="button">Add a new cat</a></p>

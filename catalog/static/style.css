@@ -1,30 +1,38 @@
 /*
- css style
+/ Stylesheet for Catalog Project
 */
 
-html {
-	position: relative;
-	min-height: 100%;
+/* General */
+nav,
+aside,
+hgroup,
+header,
+footer,
+figure,
+article,
+section,
+figcaption {
+  display: block;
+} /* HTML5 compatibility for older browsers  */
+
+html,
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 body {
+	font-size: 16px;
+	font-family: 'Open Sans', sans-serif;
+	letter-spacing: 1px;
+	text-align: justify;
 	color: #575558;
-	padding-top: 80px;
-	padding-bottom: 100px;
+	padding-top: 32px;
+}
+
+section {
 	margin-bottom: 50px;
-}
-
-.user {
-	border-left: 0.5px solid #000;
-}
-
-.align-center {
-	text-align: center;
-}
-
-.about-txt {
-	padding: 2%;
-	background-color: #eee;
 }
 
 h1,
@@ -34,15 +42,22 @@ h6 {
 	color: #575558;
 }
 
+h1 {
+	font-weight: bold;
+}
+
 h5 {
-	padding: 2%;
 	color: #fff;
+	font-size: 20px;
+	padding: 2%;
 	background-color: #575558;
 }
 
 
 a {
 	color: #f2d201;
+	line-height: 60px;
+	padding: 2%;
 	background-color: #575558;
 }
 
@@ -52,15 +67,8 @@ a:focus {
 	text-decoration: none;
 }
 
-.footer {
-	color: #fff;
-	text-align: center;
-	width: 100%;
-	height: 60px;
-	bottom: 0;
-	padding-top: 20px;
-	position: absolute;
-	background-color: #575558;
+.glyphicon-heart {
+	color: #f2d201;
 }
 
 .page-header {
@@ -78,11 +86,7 @@ a:focus {
 	border-color: #575558;
 }
 
-.navbar-inverse .navbar-brand {
-	color: #f2d201;
-	text-transform: uppercase;
-}
-
+.navbar-inverse .navbar-brand,
 .navbar-inverse .navbar-nav>li>a {
 	color: #f2d201;
 	text-transform: uppercase;
@@ -95,6 +99,14 @@ a:focus {
 	color: #575558;
 	font-weight: bold;
 	background-color: #f2d201;
+}
+
+.navbar-brand {
+	font-weight: bold;
+}
+
+.dropdown-menu>li>a {
+	color: #fff;
 }
 
 .btn-default:hover,
@@ -111,6 +123,58 @@ a:focus {
 	background-color: #575558;
 }
 
-.dropdown-menu>li>a {
+.footer {
 	color: #fff;
+	text-align: center;
+	width: 100%;
+	height: 80px;
+	bottom: 0;
+	padding-top: 10px;
+	position: absolute;
+	background-color: #575558;
+}
+
+
+/* Thumbnail */
+.thumbnail {
+	padding: 0;
+}
+
+.div-thumb {
+	position: relative;
+	width: 100%;
+	height: 300px;
+	overflow: hidden;
+	margin: 0 auto;
+}
+
+.img-thumb {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	height: 100%;
+	width: auto;
+	-webkit-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+}
+
+.img-link {
+	padding: 0;
+	background: none;
+}
+
+
+/* General Classes */
+.align-center {
+	text-align: center;
+}
+
+.about-txt {
+	padding: 2%;
+	background-color: #eee;
+}
+
+.cat-name {
+	text-transform: uppercase;
 }

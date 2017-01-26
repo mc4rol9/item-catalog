@@ -9,6 +9,7 @@
 {% block content %}
 <main class="row">
 	<section class="col-sm-8 col-sm-offset-2">
+		<!-- Check if item has a picture file or a link to picture -->
 		{% if item.picture_filename != none %}
 		<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-responsive">
 		{% elif item.picture_url != none %}
@@ -27,8 +28,8 @@
 			</div>
 
 			<select class="form-control" name="category">
-			{% for category in categories %}
-				{% if category.id == item.category_id %}
+			{% for category in categories %} <!-- Get all the categories -->
+				{% if category.id == item.category_id %} <!-- Show the category of the item as selected -->
 				<option value="{{category.name}}" selected>{{ category.name }}</option>
 				{% else %}
 				<option value="{{category.name}}">{{ category.name }}</option>

@@ -9,17 +9,20 @@
 		<title>Cat Lovers List</title>
 
 		<!-- Favicon -->
-    	<link rel="shortcut icon" href="/static/favicon.ico">
-    	<link rel="icon" href="/static/favicon.ico">
+    	<link href="/static/favicon.ico" rel="shortcut icon">
+    	<link href="/static/favicon.ico" rel="icon" >
 
     	<!-- normalize css -->
-		<link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize-css">
+		<link src="//normalize-css.googlecode.com/svn/trunk/normalize-css" rel="stylesheet">
 
 		<!-- Bootstrap -->
 	    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     	<!-- Custom Styles -->
-    	<link rel="stylesheet" href="/static/style.css">
+    	<link href="/static/style.css" rel="stylesheet">
+
+    	<!-- Google Font -->
+    	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
 
 	    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -39,17 +42,17 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="{{url_for('mainPage')}}">The Cat Lovers</a>
+					<a class="navbar-brand" href="{{url_for('mainPage')}}">
+					<span class="glyphicon glyphicon-camera" aria-hidden="true"></span> The Cat Lovers</a>
 				</div>
-
 				<!-- Collect the nav links for toggling -->
 			    <div class="collapse navbar-collapse" id="main-menu">
 			    	<ul class="nav navbar-nav navbar-right">
-			        	<li class="dropdown">
+			        	<li class="dropdown"> <!-- Dropdown for categories group as Action -->
 				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Actions<span class="caret"></span></a>
 				          	<ul class="dropdown-menu">
 				          		{% for category in menuNav %}
-				          		{% if loop.index < 7 %}
+				          		{% if loop.index < 7 %} <!-- Show the first 6 categories -->
 					            <li><a href="{{url_for('showCategory', category_id=category.id)}}">
 					            	{{ category.name }}</a>
 					            </li>
@@ -57,11 +60,11 @@
 					        {% endfor %}
 				          	</ul>
 			        	</li>
-			        	<li class="dropdown">
+			        	<li class="dropdown"> <!-- Dropdown for categories group as Selfies -->
 				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Selfies<span class="caret"></span></a>
 				          	<ul class="dropdown-menu">
 				          	{% for category in menuNav %}
-				          		{% if loop.index > 6 %}
+				          		{% if loop.index > 6 %} <!-- Show the last 6 categories -->
 					            <li><a href="{{url_for('showCategory', category_id=category.id)}}">
 					            	{{ category.name }}</a>
 					            </li>
@@ -69,9 +72,9 @@
 					        {% endfor %}
 				          	</ul>
 			        	</li>
-			        	{% if 'username' not in session %}
+			        	{% if 'username' not in session %} <!-- If user isn't logged in -->
 			        	<li><a href="{{url_for('loginPage')}}">Signin | Login</a></li>
-                        {% else %}
+                        {% else %} <!-- If user is logged in -->
 			        	<li><a href="{{url_for('myList')}}">My List</a></li>
 			        	<li><a href="{{url_for('logout')}}">Logout</a></li>
 			        	{% endif %}
@@ -82,9 +85,9 @@
 
 		<div class="container">
 			{% block headerpage %}
-			<!-- the header of the pages goes here -->
+			<!-- The header of the pages goes here -->
 			{% endblock headerpage %}
-			<!-- where to show the flash messages -->
+			<!-- Where to show the flash messages -->
 			<section class="row">
 				<div class="col-xs-12 align-center">
 				{% with messages = get_flashed_messages() %}
@@ -97,14 +100,18 @@
 				</div>
 			</section>
 			{% block content %}
-			<!-- the main content from other pages goes here -->
+			<!-- The main content from other pages goes here -->
 			{% endblock content %}
 		</div>
 
 		<footer class="footer container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2">
-					<p>by mc9dev</p>
+					<p><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+					   <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+					   <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> 
+					   <br>mc9dev
+					</p>
 				</div>
 			</div>
 		</footer>
