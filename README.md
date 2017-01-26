@@ -1,5 +1,6 @@
 # Item Catalog
-The requirements for the project:
+Project requirements:
+
 To develop a catalog web application that displays a list of items within a variety of categories
 and integrate third party user registration and authentication. Only authenticated users are able 
 to post, edit and delete their own items. The application should provide API endpoints.
@@ -10,6 +11,7 @@ Extra features:
 - The app has CRUD functionality for image handling.
 
 About my project:
+
 A web application called THE CAT LOVERS where Cat Lovers can share pictures of their cats in 
 own lists.
 
@@ -50,30 +52,30 @@ The other files are for the vagrant and virtual machine.
 
 Understanding the project files:
 
-`/catalog`: the project directory
+- `/catalog`: the project directory
 
-	`/static`: directory with bootstrap files, favicon icon and the project sylesheet.
+  - `/static`: directory with bootstrap files, favicon icon and the project sylesheet.
 
-	`/templates`: directory with all HTML templates. The frontend code for the application.
-		`404.html`: template for 404 error page.
-		`category.html`: template for all single category pages.
-		`index.html`: template for homepage.
-		`item.html`: template for all single item pages.
-		`item_delete.html`: template page with form to delete an item.
-		`item_edit.html`: template page with form to edit an item.
-		`item_new.html`: template page with form to create a new item.
-		`layout.html`: main template layout for all the pages.
-		`list.html`: template page for a user's list.
-		`list_delete.html`: confirmation template page for deleting a user's list.
-		`login.html`: template for login page.
+  - `/templates`: directory with all HTML templates. The frontend code for the application.
+      - `404.html`: template for 404 error page.
+      - `category.html`: template for all single category pages.
+      - `index.html`: template for homepage.
+      - `item.html`: template for all single item pages.
+      - `item_delete.html`: template page with form to delete an item.
+      - `item_edit.html`: template page with form to edit an item.
+      - `item_new.html`: template page with form to create a new item.
+      - `layout.html`: main template layout for all the pages.
+      - `list.html`: template page for a user's list.
+      - `list_delete.html`: confirmation template page for deleting a user's list.
+      - `login.html`: template for login page.
 
-	`/uploads`: directory for all the images uploaded.
+  - `/uploads`: directory for all the images uploaded.
 
-	`client_secrets_fb.json`: the client secrets for Facebook OAuth login.
-	`client_secrets_gplus.json`: the client secrets for Google OAuth login.
-	`database_populate.py`: initial data to database.
-	`models.py`: define and create database.
-	`views.py`: the backend code of the web application. 
+  - `client_secrets_fb.json`: the client secrets for Facebook OAuth login.
+  - `client_secrets_gplus.json`: the client secrets for Google OAuth login.
+  - `database_populate.py`: initial data to database.
+  - `models.py`: define and create database.
+  - `views.py`: the backend code of the web application. 
 
 
 ## Built With
