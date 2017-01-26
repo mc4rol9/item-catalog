@@ -43,7 +43,6 @@ session = DBSession()
 
 
 # GENERAL FUNCTIONS AND ROUTES -->
-
 def categoryMenu():
     '''Get categories from DB for menu navigation'''
     menuNav = session.query(Category).all()
@@ -71,7 +70,6 @@ def show_image(filename):
 
 
 # THE JSON API ENDPOINTS -->
-
 @app.route('/cats/JSON')
 def catlistsJSON():
     '''Return all items with categories as JSON file'''
@@ -104,7 +102,6 @@ def itemJSON(item_id):
 
 
 # AUTH LOGIN -->
-
 @app.route('/login/')
 def loginPage():
     '''Create a state token to prevent request forgery.
@@ -415,7 +412,6 @@ def logout():
 
 
 # PRIMARY ROUTES -->
-
 @app.route('/')
 def mainPage():
     '''The Homepage'''
@@ -456,7 +452,7 @@ def showList(user_id):
 
 @app.route('/catlover/mylist/')
 def myList():
-    '''Navbar link redirect to user list'''
+    '''Navbar link to redirect to user list'''
     if 'username' not in login_session:
         return redirect('/login')
 
@@ -466,6 +462,7 @@ def myList():
 
 @app.route('/catlover/<int:user_id>/delete/', methods=['GET', 'POST'])
 def deleteList(user_id):
+    '''Handler with deleting a list'''
     menuNav = categoryMenu()
 
     try:
@@ -519,7 +516,7 @@ def showCategory(category_id):
 
 @app.route('/cat/<int:item_id>/')
 def showItem(item_id):
-    '''Handler to Single Item page'''
+    '''Show a single item page'''
     menuNav = categoryMenu()
 
     try:
@@ -602,7 +599,7 @@ def addItem(user_id):
 
 @app.route('/cat/<int:item_id>/edit/', methods=['GET', 'POST'])
 def editItem(item_id):
-    '''To edit an item.'''
+    '''Handler to edit an item.'''
     try:
         item = session.query(Item).filter_by(id=item_id).one()
     except NoResultFound:
@@ -670,7 +667,7 @@ def editItem(item_id):
 
 @app.route('/cat/<int:item_id>/delete/', methods=['GET', 'POST'])
 def deleteItem(item_id):
-    '''To delete an item.'''
+    '''Handler to delete an item.'''
     try:
         item = session.query(Item).filter_by(id=item_id).one()
     except NoResultFound:
@@ -703,6 +700,7 @@ def deleteItem(item_id):
 
 @app.errorhandler(404)
 def notFound(exc):
+    '''Handler with 404 error.'''
     menuNav = categoryMenu()
     items = session.query(Item).order_by(desc(Item.id))
     return render_template('404.html',
