@@ -54,6 +54,8 @@ Understanding the project files:
 
 - `/catalog`: the project directory
 
+  -`/_app-screenshot`: directory with screenshots from app. Just to illustrate.
+
   - `/static`: directory with bootstrap files, favicon icon and the project sylesheet.
 
   - `/templates`: directory with all HTML templates. The frontend code for the application.
