@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import json
 import random
@@ -11,6 +12,7 @@ from flask import make_response
 from flask import (flash, render_template, url_for, jsonify,
                    request, redirect, send_from_directory)
 
+from functools import wraps
 from werkzeug import secure_filename
 
 from oauth2client.client import FlowExchangeError
@@ -167,6 +169,19 @@ def getUserInfo(user_id):
         return user
     except NoResultFound:
         return None
+
+
+def login_required(f):
+    '''Decorator function to check if user is logged in.'''
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' in login_session:
+            return f(*args, **kwargs)
+        else:
+            flash("You must be logged in!")
+            return redirect('/login')
+    return decorated_function
+
 
 # create the client ID for G+
 CLIENT_ID = json.loads(
@@ -451,16 +466,15 @@ def showList(user_id):
 
 
 @app.route('/catlover/mylist/')
+@login_required  # check if user is logged in
 def myList():
     '''Navbar link to redirect to user list'''
-    if 'username' not in login_session:
-        return redirect('/login')
-
     user_id = getUserID(login_session['email'])
     return redirect(url_for('showList', user_id=user_id))
 
 
 @app.route('/catlover/<int:user_id>/delete/', methods=['GET', 'POST'])
+@login_required  # check if user is logged in
 def deleteList(user_id):
     '''Handler with deleting a list'''
     menuNav = categoryMenu()
@@ -473,8 +487,7 @@ def deleteList(user_id):
 
     author = getUserInfo(user.id)
 
-    if 'username' not in login_session or author.id != (
-                         login_session['user_id']):
+    if author.id != login_session['user_id']:
         flash("Hey, you can't delete a Cat Lover!")
         return redirect(url_for('mainPage'))
     else:
@@ -540,6 +553,7 @@ def showItem(item_id):
 
 
 @app.route('/catlover/<int:user_id>/newcat/', methods=['GET', 'POST'])
+@login_required  # check if user is logged in
 def addItem(user_id):
     '''Handler to add a new Item'''
     try:
@@ -548,9 +562,11 @@ def addItem(user_id):
         flash("Sorry, this cat lover isn't among us!")
         return redirect(url_for('mainPage'))
 
-    if 'username' not in login_session:
-        flash("You must be logged in to add a cat to your list!")
-        return redirect('/login')
+    author = getUserInfo(user.id)
+
+    if author.id != login_session['user_id']:
+        flash("Hey, you can't add a cat to another Cat Lover list!")
+        return redirect(url_for('mainPage'))
     else:
         if request.method == 'POST':
             if not request.form['name']:
@@ -587,7 +603,7 @@ def addItem(user_id):
             session.add(newItem)
             session.commit()
 
-            flash("Perrrrfect! Your amazing cat is up!")
+            flash("Purrrrfect! Your amazing cat is up!")
             item_id = newItem.id
             return redirect(url_for('showItem', item_id=item_id))
         else:
@@ -598,6 +614,7 @@ def addItem(user_id):
 
 
 @app.route('/cat/<int:item_id>/edit/', methods=['GET', 'POST'])
+@login_required  # check if user is logged in
 def editItem(item_id):
     '''Handler to edit an item.'''
     try:
@@ -608,8 +625,7 @@ def editItem(item_id):
 
     author = getUserInfo(item.user_id)
 
-    if 'username' not in login_session or author.id != (
-                         login_session['user_id']):
+    if author.id != login_session['user_id']:
         flash("Hey, you can't edit a Cat that doesn't belong to you!")
         return redirect(url_for('mainPage'))
     else:
@@ -666,6 +682,7 @@ def editItem(item_id):
 
 
 @app.route('/cat/<int:item_id>/delete/', methods=['GET', 'POST'])
+@login_required  # check if user is logged in
 def deleteItem(item_id):
     '''Handler to delete an item.'''
     try:
@@ -676,8 +693,7 @@ def deleteItem(item_id):
 
     author = getUserInfo(item.user_id)
 
-    if 'username' not in login_session or author.id != (
-                         login_session['user_id']):
+    if author.id != login_session['user_id']:
         flash("Hey, you can't delete a Cat that doesn't belong to you!")
         return redirect(url_for('mainPage'))
     else:
