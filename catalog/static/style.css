@@ -17,9 +17,13 @@ figcaption {
 
 html,
 body {
-    width: 100%;
     margin: 0;
     padding: 0;
+}
+
+html {
+	position: relative;
+	min-height: 100%;
 }
 
 body {
@@ -28,7 +32,7 @@ body {
 	letter-spacing: 1px;
 	text-align: justify;
 	color: #575558;
-	padding-top: 32px;
+	padding: 40px 0 80px 0;
 }
 
 section {
