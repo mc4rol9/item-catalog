@@ -17,7 +17,7 @@
 				<div class="div-thumb">
 					<!-- Check if item has a picture file or a link to picture -->			
 					{% if item.picture_filename != none %}
-					<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-thumb">
+					<img src="{{url_for('show_image', filename=item.picture_filename)}}" alt="cat picture" class="img-thumb img-responsive">
 					{% elif item.picture_url != none %}
 					<img src="{{item.picture_url}}" alt="cat picture" class="img-thumb">
 					{% endif %}
